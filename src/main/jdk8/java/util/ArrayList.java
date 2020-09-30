@@ -109,7 +109,7 @@ public class ArrayList<E> extends AbstractList<E>
     private static final long serialVersionUID = 8683452581122892189L;
 
     /**
-     * Default initial capacity.
+     * 容器初始化容量
      */
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -189,13 +189,14 @@ public class ArrayList<E> extends AbstractList<E>
      * Trims the capacity of this <tt>ArrayList</tt> instance to be the
      * list's current size.  An application can use this operation to minimize
      * the storage of an <tt>ArrayList</tt> instance.
+	 * ArrayList所说没有用的值并不是null，而是ArrayList每次增长会预申请多一点空间，1.5倍+1，而不是两倍
+     * 这样就会出现当size() = 1000的时候，ArrayList已经申请了1200空间的情况
+     * trimToSize 的作用只是去掉预留元素位置，就是删除多余的200，改为只申请1000,内存紧张的时候会用到.
      */
     public void trimToSize() {
         modCount++;
         if (size < elementData.length) {
-            elementData = (size == 0)
-              ? EMPTY_ELEMENTDATA
-              : Arrays.copyOf(elementData, size);
+            elementData = (size == 0)? EMPTY_ELEMENTDATA : Arrays.copyOf(elementData, size);
         }
     }
 
@@ -252,6 +253,7 @@ public class ArrayList<E> extends AbstractList<E>
     private void grow(int minCapacity) {
         // overflow-conscious code
         int oldCapacity = elementData.length;
+		//扩容1.5倍
         int newCapacity = oldCapacity + (oldCapacity >> 1);
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
